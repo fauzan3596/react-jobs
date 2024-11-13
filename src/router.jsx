@@ -5,6 +5,7 @@ import JobsPage from "./pages/JobsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import JobPage from "./pages/JobPage";
 import AddJobPage from "./pages/AddJobPage";
+import EditJobPage from "./pages/EditJobPage";
 
 const router =  createBrowserRouter([
     {
@@ -26,6 +27,10 @@ const router =  createBrowserRouter([
             {
                 path: "/add-job",
                 element: <AddJobPage />
+            },
+            {
+                path: "/jobs/edit/:id",
+                element: <EditJobPage />
             },
             {
                 path: "*",

@@ -1,26 +1,30 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
-function AddJobPage() {
-  const [title, setTitle] = useState("");
-  const [type, setType] = useState("Full-Time");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [salary, setSalary] = useState("Under $50K");
-  const [companyName, setCompanyName] = useState("");
-  const [companyDescription, setCompanyDescription] = useState("");
-  const [contactEmail, setContactEmail] = useState("");
-  const [contactPhone, setContactPhone] = useState("");
+function EditJobPage() {
+  const stateLocation = useLocation();
+  const job = stateLocation.state.job || "";
+  const [title, setTitle] = useState(job.title);
+  const [type, setType] = useState(job.type);
+  const [location, setLocation] = useState(job.location);
+  const [description, setDescription] = useState(job.description);
+  const [salary, setSalary] = useState(job.salary);
+  const [companyName, setCompanyName] = useState(job.company.name);
+  const [companyDescription, setCompanyDescription] = useState(
+    job.company.description
+  );
+  const [contactEmail, setContactEmail] = useState(job.company.contactEmail);
+  const [contactPhone, setContactPhone] = useState(job.company.contactPhone);
 
   const navigate = useNavigate();
 
-  const addJobSubmit = async () => {
+  const editJobSubmit = async () => {
     try {
-      const job = await axios({
-        method: "POST",
-        url: "/api/jobs",
+      await axios({
+        method: "PUT",
+        url: `/api/jobs/${job.id}`,
         data: {
           title,
           type,
@@ -34,17 +38,17 @@ function AddJobPage() {
             contactPhone,
           },
         },
-      })
+      });
     } catch (error) {
       console.log(error);
     }
-  }
-  
+  };
+
   const submitHandler = (e) => {
     e.preventDefault();
-    addJobSubmit();
-    toast.success("Job added successfully!");
-    return navigate('/jobs')
+    editJobSubmit();
+    toast.success("Job edited successfully!");
+    return navigate(`/jobs/${job.id}`);
   };
 
   return (
@@ -52,7 +56,9 @@ function AddJobPage() {
       <div className="container m-auto max-w-2xl py-24">
         <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
           <form onSubmit={submitHandler}>
-            <h2 className="text-3xl text-center font-semibold mb-6">Add Job</h2>
+            <h2 className="text-3xl text-center font-semibold mb-6">
+              Edit Job
+            </h2>
 
             <div className="mb-4">
               <label
@@ -233,7 +239,7 @@ function AddJobPage() {
                 className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full w-full focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Add Job
+                Edit Job
               </button>
             </div>
           </form>
@@ -243,4 +249,4 @@ function AddJobPage() {
   );
 }
 
-export default AddJobPage;
+export default EditJobPage;
